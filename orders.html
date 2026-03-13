@@ -1,0 +1,207 @@
+eight<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Previous Orders — megamart store</title>
+    <style>
+        :root {
+            --bg-1: #0b0b0c;
+            --bg-2: #1a0f02;
+            --gold: #d4af37;
+            --white: #f8fafc;
+            --muted: #c9d1d9;
+            --shadow: 0 8px 30px rgba(2, 6, 23, 0.6);
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: Inter, system-ui, Arial;
+            color: var(--white);
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: linear-gradient(120deg, var(--bg-1), var(--bg-2));
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        header {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 28px;
+            background: rgba(255, 255, 255, 0.03);
+            box-shadow: var(--shadow);
+        }
+
+        .brand {
+            font-weight: 800;
+            font-size: 20px;
+        }
+
+        .brand span {
+            color: var(--gold);
+        }
+
+        .btn {
+            border: none;
+            padding: 8px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-w: 600;
+        }
+
+        .btn.gold {
+            background: transparent;
+            color: var(--gold);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+        }
+
+        .btn.primary {
+            background: var(--gold);
+            color: #081018;
+        }
+
+        .orders {
+            width: 90%;
+            max-width: 1000px;
+            margin-top: 30px;
+        }
+
+        .order-card {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: var(--shadow);
+            margin-bottom: 18px;
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding-bottom: 8px;
+            margin-bottom: 12px;
+        }
+
+        .order-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+        }
+
+        .item {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 8px;
+            width: 180px;
+            text-align: center;
+        }
+
+        .item img {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 6px;
+        }
+
+        .muted {
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        footer {
+            margin-top: 20px;
+            color: var(--muted);
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .empty {
+            text-align: center;
+            color: var(--muted);
+            margin-top: 100px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="brand">megamart <span>store</span></div>
+        <div style="display:flex;gap:10px;">
+            <button class="btn gold" onclick="window.location='index.html'">Back to Shop</button>
+            <button class="btn gold" onclick="logout()">Logout</button>
+            <button class="btn primary" onclick="clearOrders()">Clear All</button>
+        </div>
+    </header>
+
+    <div class="orders" id="ordersContainer"></div>
+
+    <footer>© megamart — Orders stored locally in your browser (localStorage)</footer>
+
+    <script>
+        // Read and write helpers for localStorage
+        const read = k => JSON.parse(localStorage.getItem(k) || 'null');
+        const write = (k, v) => localStorage.setItem(k, JSON.stringify(v));
+
+        // Render previous orders
+        const container = document.getElementById('ordersContainer');
+        const orders = read('orders') || [];
+
+        if (orders.length === 0) {
+            container.innerHTML = `
+        <div class="empty">
+          <h3>No previous orders found</h3>
+          <p>Start shopping to see your orders here.</p>
+          <p class="muted">Orders are stored locally in your browser (localStorage).</p>
+        </div>`;
+        } else {
+            container.innerHTML = orders.map(o => `
+        <div class="order-card">
+          <div class="order-header">
+            <div>
+              <strong>Order ID:</strong> ${o.id} <br>
+              <span class="muted">${o.date}</span>
+            </div>
+            <div class="muted">Total: ₹ ${o.total.toLocaleString('en-IN')}</div>
+          </div>
+          <div class="order-items">
+            ${o.items.map(it => `
+              <div class="item">
+                <img src="${it.img}" alt="${it.title}">
+                <div><strong>${it.title}</strong></div>
+                <div class="muted">Qty: ${it.qty}</div>
+                <div class="muted">₹ ${(it.price * it.qty).toLocaleString('en-IN')}</div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `).join('');
+        }
+
+        // Logout clears user info but keeps orders
+        function logout() {
+            localStorage.removeItem('user');
+            alert("Logged out successfully!");
+            window.location = "login.html";
+        }
+
+        // Clear all orders
+        function clearOrders() {
+            if (confirm("Are you sure you want to delete all orders?")) {
+                localStorage.removeItem('orders');
+                location.reload();
+            }
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MegaMart — Sign Up</title>
+    <style>
+        :root {
+            --bg-1: #0b0b0c;
+            --bg-2: #1a0f02;
+            --gold: #d4af37;
+            --white: #f8fafc;
+            --muted: #c9d1d9;
+            --radius: 12px;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: Inter, system-ui, Arial;
+        }
+
+        body {
+            margin: 0;
+            height: 100vh;
+            background: linear-gradient(120deg, var(--bg-1), var(--bg-2));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 30px;
+            border-radius: var(--radius);
+            width: 340px;
+            box-shadow: 0 8px 30px rgba(2, 6, 23, 0.6);
+        }
+
+        h2 {
+            text-align: center;
+            color: var(--gold);
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+            font-size: 14px;
+            color: var(--muted);
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            margin-top: 6px;
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--white);
+        }
+
+        input:focus {
+            outline: 2px solid var(--gold);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 10px;
+            margin-top: 16px;
+            border-radius: 8px;
+            border: none;
+            background: var(--gold);
+            color: #081018;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background: #f3ce5e;
+        }
+
+        .muted {
+            text-align: center;
+            margin-top: 12px;
+            font-size: 14px;
+            color: var(--muted);
+        }
+
+        a {
+            color: var(--gold);
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="card">
+        <h2>Create Account</h2>
+
+        <!-- Signup form -->
+        <label for="name">Full Name</label>
+        <input type="text" id="name" placeholder="Enter your name" required>
+
+        <label for="email">Email Address</label>
+        <input type="email" id="email" placeholder="Enter a valid email" required>
+
+        <label for="password">Password</label>
+        <input type="password" id="password" placeholder="Create a password" required>
+
+        <button class="btn" onclick="signup()">Sign Up</button>
+
+        <div class="muted">Already have an account? <a href="login.html">Login</a></div>
+    </div>
+
+    <script>
+        function signup() {
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value.trim();
+
+            // ✅ Fixed email regex
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailPattern.test(email)) {
+                alert("Please enter a valid email address!");
+                return;
+            }
+            if (!name || !password) {
+                alert("All fields are required!");
+                return;
+            }
+
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            if (users.find(u => u.email === email)) {
+                alert("Email already registered! Please login.");
+                return;
+            }
+
+            users.push({ name, email, password });
+            localStorage.setItem('users', JSON.stringify(users));
+
+            alert("Signup successful! Please login now.");
+            window.location.href = "login.html";
+        }
+    </script>
+</body>
+
+</html>
+
+
